@@ -1,2 +1,6 @@
+cupy
+faiss-gpu
+GitPython
+ujson
 torch
 transformers
