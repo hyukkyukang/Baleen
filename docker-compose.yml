@@ -1,7 +1,7 @@
 version: "3"
 
 services:
-    project101-server:
+    Baleen:
         image: hyukkyukang/baleen:latest
         container_name: baleen
         stdin_open: true
