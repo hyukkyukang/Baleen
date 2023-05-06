@@ -3,12 +3,12 @@ version: "3"
 services:
     Baleen:
         image: hyukkyukang/baleen:latest
-        container_name: baleen
+        container_name: Baleen
         stdin_open: true
         tty: true
         network_mode: "host"
         volumes:
-            - ./:/root/baleen
+            - ./:/root/Baleen
         deploy:
             resources:
                 reservations:
