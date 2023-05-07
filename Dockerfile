@@ -24,3 +24,12 @@ RUN echo "export CONFIGPATH=./config.yml" >> ~/.bashrc
 # Set default python version to 3.11
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.11 1
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1    
+
+# Install cmake
+RUN wget https://github.com/Kitware/CMake/releases/download/v3.26.3/cmake-3.26.3.tar.gz
+RUN tar -xvf cmake-3.26.3.tar.gz
+RUN cd cmake-3.26.3 && ./bootstrap --prefix=/usr/local && make && make install
+
+# Install faiss
+RUN git clone https://github.com/facebookresearch/faiss.git
+RUN cd faiss && cmake -B build . && make -C build -j faiss && make -C build -j swigfaiss && (cd build/faiss/python && python setup.py install)
