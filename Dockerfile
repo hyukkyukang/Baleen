@@ -2,7 +2,7 @@ FROM nvidia/cuda:12.1.1-devel-ubuntu22.04
 
 # Install basic packages
 RUN apt update
-RUN apt install gnupg git curl make g++ wget zip vim sudo -y
+RUN apt install gnupg git curl make g++ wget zip vim sudo tmux -y
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata
 
 # Install postgresql

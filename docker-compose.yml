@@ -9,6 +9,7 @@ services:
         network_mode: "host"
         volumes:
             - ./:/root/Baleen
+            - /mnt/nvme0n1p1/hkkang/QAGPT/:/mnt/md0/hkkang/QAGPT/
         deploy:
             resources:
                 reservations:

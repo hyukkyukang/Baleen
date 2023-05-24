@@ -1,5 +1,8 @@
+numpy
 cupy
 GitPython
 ujson
 torch
 transformers
+tqdm
+hkkang_utils
