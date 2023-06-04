@@ -214,7 +214,7 @@ def get_raw_scores_doc(examples, preds):
         r5, r8, r10, r20 = 0, 0, 0, 0
 
         prediction = preds[qas_id]
-        sorted_titles = [p[0] for p in prediction[0]] + prediction[1]
+        sorted_titles = prediction
         top5, top8, top10, top20 = sorted_titles[:5], sorted_titles[:8], sorted_titles[:10], sorted_titles[:20]
         if allin(sp_titles, top5):
             r5 = 1
@@ -230,7 +230,7 @@ def get_raw_scores_doc(examples, preds):
         r10_scores[qas_id] = r10
         r20_scores[qas_id] = r20
 
-        predicted_docs = [p[0] for p in prediction[0]]
+        predicted_docs = prediction
         exact_scores[qas_id] = compute_exact_doc(sp_titles, predicted_docs)
         f1_scores[qas_id] = compute_f1_doc(sp_titles, predicted_docs)
 
