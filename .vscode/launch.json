@@ -1,0 +1,91 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: indexing",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/indexing.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--wiki-version=2017",
+            ],
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "4"
+            }
+        },
+        {
+            "name": "Python: Retrieval",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/hover_inference.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--root=./saved_experiments/",
+                "--datadir=./data/",
+                "--index=wiki17.hover.2bit"
+            ],
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "4"
+            }
+        },
+        {
+            "name": "Python: Retrieval HotpotQA",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/hotpotqa_inference.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--root=./saved_experiments/",
+                "--datadir=./data/",
+                "--index=wiki17.hotpotqa.2bit"
+            ],
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "4"
+            }
+        },
+        {
+            "name": "Python: Preprocess HotpotQA",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/utility/preprocess/preprocess_hotpotqa.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Python: Evaluate HotpotQA",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/evaluation/eval.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--dev_file",
+                "/root/Baleen/data/hotpotqa/dev/qas.json",
+                "--pred_file",
+                "/root/Baleen/experiments/default/hotpotqa_inference/2023-05/23/08.27.08/hotpotqa_output.json"
+            ]
+        },
+        {
+            "name": "Inference",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/inference.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--wiki-version=2017",
+                "--query=What is the capital of France?",
+            ],
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "0"
+            }
+        }
+    ]
+}

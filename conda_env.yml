@@ -23,3 +23,7 @@ dependencies:
     - tqdm
     - transformers==4.10.0
     - ujson
+    - flask
+    - flask_cors
+    - hkkang_utils
+    - waitress

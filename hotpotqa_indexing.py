@@ -5,7 +5,9 @@ from colbert.infra import Run, ColBERTConfig, RunConfig
 from colbert import Indexer
 
 from colbert.utils.utils import print_message
+from config import config
 
+WIKI_2017_COLLECTION = config.wiki
 
 def main(args):
     print_message("#> Starting...")
