@@ -1,13 +1,25 @@
 base_dir: /mnt/md0/hkkang/QAGPT/
-collection:
-    wiki_2017: data/wiki/enwiki-20171001-colbert-collection.tsv
-    wiki_2020: data/wiki/enwiki-20200801-colbert-collection.tsv
-checkpoint:
-    hotpotqa: 
-        flipr: ckpts/baleen/hotpotqa.checkpoints-v1.0/flipr-v1.0.dnn
-        L1: ckpts/baleen/hotpotqa.checkpoints-v1.0/condenserL1-v1.0.dnn
-        L2: ckpts/baleen/hotpotqa.checkpoints-v1.0/condenserL2-v1.0.dnn
-experiment_dir: ckpts/baleen/saved_experiments
-index:
-    wiki_2017: ckpts/baleen/indexes/wiki17.hotpotqa.2bit
-    wiki_2020: ckpts/baleen/indexes/wiki20.hotpotqa.2bit
+colbert:
+    wiki2017: 
+        base_dir: ckpts/colbert/enwiki-20171001/
+        collection: collection.tsv
+        index: index.2bit
+    wiki2020:
+        base_dir: ckpts/colbert/enwiki-20200801/
+        collection: collection.tsv
+        index: index.2bit
+baleen:
+    wiki2017: 
+        base_dir: ckpts/baleen/enwiki-20171001/
+        collection: collection.jsonl
+        index: hotpotqa.index.2bit
+    wiki2020: 
+        base_dir: ckpts/baleen/enwiki-20200801/
+        collection: collection.jsonl
+        index: hotpotqa.index.2bit
+    checkpoint:
+        hotpotqa: 
+            flipr: ckpts/baleen/hotpotqa.checkpoints-v1.0/flipr-v1.0.dnn
+            L1: ckpts/baleen/hotpotqa.checkpoints-v1.0/condenserL1-v1.0.dnn
+            L2: ckpts/baleen/hotpotqa.checkpoints-v1.0/condenserL2-v1.0.dnn
+    experiment_dir: ckpts/baleen/saved_experiments

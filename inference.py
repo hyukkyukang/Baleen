@@ -11,27 +11,34 @@ from api.types import DocumentWithScore, RetrievalResult
 from baleen.condenser.condense import Condenser
 from baleen.engine import Baleen
 from baleen.hop_searcher import HopSearcher
-from colbert.data import Queries
 from colbert.infra import Run, RunConfig
 from config import config
 
-DEFAULT_ROOT = os.path.join(config.base_dir, config.experiment_dir)
+DEFAULT_ROOT = os.path.join(config.base_dir, config.baleen.experiment_dir)
 # Checkpoints
 HOTPOTQA_FLIPR_CHECKPOINT_PATH = os.path.join(
-    config.base_dir, config.checkpoint.hotpotqa.flipr
+    config.base_dir, config.baleen.checkpoint.hotpotqa.flipr
 )
 HOTPOTQA_L1_CHECKPOINT_PATH = os.path.join(
-    config.base_dir, config.checkpoint.hotpotqa.L1
+    config.base_dir, config.baleen.checkpoint.hotpotqa.L1
 )
 HOTPOTQA_L2_CHECKPOINT_PATH = os.path.join(
-    config.base_dir, config.checkpoint.hotpotqa.L2
+    config.base_dir, config.baleen.checkpoint.hotpotqa.L2
 )
 # Index
-WIKI_2017_INDEX = os.path.join(config.base_dir, config.index.wiki_2017)
-WIKI_2020_INDEX = os.path.join(config.base_dir, config.index.wiki_2020)
+WIKI_2017_INDEX = os.path.join(
+    config.base_dir, config.baleen.wiki2017.base_dir, config.baleen.wiki2017.index
+)
+WIKI_2020_INDEX = os.path.join(
+    config.base_dir, config.baleen.wiki2017.base_dir, config.baleen.wiki2020.index
+)
 # Wiki Collection
-WIKI_2017_COLLECTION = os.path.join(config.base_dir, config.collection.wiki_2017)
-WIKI_2020_COLLECTION = os.path.join(config.base_dir, config.collection.wiki_2020)
+WIKI_2017_COLLECTION = os.path.join(
+    config.base_dir, config.baleen.wiki2017.base_dir, config.baleen.wiki2017.collection
+)
+WIKI_2020_COLLECTION = os.path.join(
+    config.base_dir, config.baleen.wiki2017.base_dir, config.baleen.wiki2020.collection
+)
 
 logger = logging.getLogger("BaleenRetriever")
 
@@ -99,7 +106,7 @@ class Retriever(metaclass=pattern_utils.SingletonABCMetaWithArgs):
             facts, pids_bag, more_facts = self.baleen.search(query, num_hops=2)
             # facts to document
             docs = []
-            all_facts = facts + more_facts
+            all_facts = facts + more_facts[2:]
             docs = [
                 self._to_doc(
                     doc_id=all_facts[rank_idx][0],
@@ -124,10 +131,12 @@ def main(wiki_version: str, query: str):
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--wiki-version", type=str, required=True, choices=["2017", "2020"]
+        "--wiki-version", type=str, default="2017", choices=["2017", "2020"]
     )
     parser.add_argument(
-        "--query", type=str, default="Who is older Danny Green or James Worthy?"
+        "--query",
+        type=str,
+        default="Which genus contains more species, Ortegocactus or Eschscholzia?",
     )
     return parser.parse_args()
 

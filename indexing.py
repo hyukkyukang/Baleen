@@ -9,16 +9,28 @@ from colbert.infra import ColBERTConfig, Run, RunConfig
 from config import config
 
 DEFAULT_NBITS = 2
-DEFAULT_ROOT = os.path.join(config.base_dir, config.experiment_dir)
+DEFAULT_ROOT = os.path.join(config.base_dir, config.baleen.experiment_dir)
 HOTPOTQA_CHECKPOINT_PATH = os.path.join(
-    config.base_dir, config.checkpoint.hotpotqa.flipr
+    config.base_dir, config.baleen.checkpoint.hotpotqa.flipr
 )
 # Wiki Collection
-WIKI_2017_COLLECTION = os.path.join(config.base_dir, config.collection.wiki_2017)
-WIKI_2020_COLLECTION = os.path.join(config.base_dir, config.collection.wiki_2020)
+WIKI_2017_COLLECTION = os.path.join(
+    config.base_dir,
+    config.colbert.wiki2017.base_dir,
+    config.colbert.wiki2017.collection,
+)
+WIKI_2020_COLLECTION = os.path.join(
+    config.base_dir,
+    config.colbert.wiki2020.base_dir,
+    config.colbert.wiki2020.collection,
+)
 # Index
-WIKI_2017_INDEX = os.path.join(config.base_dir, config.index.wiki_2017)
-WIKI_2020_INDEX = os.path.join(config.base_dir, config.index.wiki_2020)
+WIKI_2017_INDEX = os.path.join(
+    config.base_dir, config.baleen.wiki2017.base_dir, config.baleen.wiki2017.index
+)
+WIKI_2020_INDEX = os.path.join(
+    config.base_dir, config.baleen.wiki2020.base_dir, config.baleen.wiki2020.index
+)
 
 logger = logging.getLogger("BaleenIndexer")
 
