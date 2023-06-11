@@ -1,4 +1,7 @@
 base_dir: /mnt/md0/hkkang/QAGPT/
+api_server:
+    host: 0.0.0.0
+    port: 5004
 colbert:
     wiki2017: 
         base_dir: ckpts/colbert/enwiki-20171001/
@@ -13,10 +16,12 @@ baleen:
         base_dir: ckpts/baleen/enwiki-20171001/
         collection: collection.jsonl
         index: hotpotqa.index.2bit
+        api_index_name: enwiki-20171001-abstract
     wiki2020: 
         base_dir: ckpts/baleen/enwiki-20200801/
         collection: collection.jsonl
         index: hotpotqa.index.2bit
+        api_index_name: enwiki-20200801
     checkpoint:
         hotpotqa: 
             flipr: ckpts/baleen/hotpotqa.checkpoints-v1.0/flipr-v1.0.dnn

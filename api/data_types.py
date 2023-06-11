@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-import dataclasses
+import attrs
 from typing import Dict, List
 
 
-@dataclasses.dataclass
+@attrs.define
 class DocumentWithScore:
     title: str
     text: str
@@ -26,7 +26,7 @@ class DocumentWithScore:
         )
 
 
-@dataclasses.dataclass
+@attrs.define
 class RetrievalResult:
     query: str
     documents_with_score: List[DocumentWithScore]

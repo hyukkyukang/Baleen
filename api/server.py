@@ -1,11 +1,18 @@
 import logging
+from typing import List, Union
+
 from flask import Flask, request
 from flask_cors import CORS
 from waitress import serve
 
+from api.data_types import RetrievalResult
+from config import config
+from inference import Retriever
 
-import hkkang_utils.file as file_utils
-
+ES_WIKI_INDEX_NAMES = [
+    config.baleen.wiki2017.api_index_name,
+    config.baleen.wiki2020.api_index_name,
+]
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -13,61 +20,59 @@ cors = CORS(app)
 logger = logging.getLogger("FlaskServer")
 logger.setLevel(logging.INFO)
 
-# Load model to memory
-logger.info("Loading model...")
-inference_model = Inferencer()
-logger.info("Loading model done!")
-
 
 @app.route("/")
 def hello_world():
-    return "<p>Hello, World! from AISO API</p>"
+    return "<p>Hello, World! from Baleen API</p>"
 
 
-@app.route("/inference", methods=["GET", "POST", "OPTIONS"])
+@app.route("/retrieval", methods=["GET", "POST", "OPTIONS"])
 def model_inference():
     # GET variables
     parameter_dict = request.args.to_dict()
 
     # Check parameters are valid
-    params_to_check = ["modelName", "question", "wikiVersion", "stepSize"]
+    params_to_check = ["modelName", "wikiVersion", "returnNum", "queries"]
     if len(parameter_dict) == 0:
-        logger.warning("/inference: No parameter")
+        logger.warning("/retrieval: No parameter")
         return {}
     for param in params_to_check:
         if param not in parameter_dict:
-            logger.warning(f"/inference: No {param} parameter")
+            logger.warning(f"/retrieval: No {param} parameter")
             return {}
 
     # Get params
-    question = parameter_dict["question"]
     model_name = parameter_dict["modelName"]
+    queries = parameter_dict["queries"]
     wiki_version = parameter_dict["wikiVersion"]
-    step_size = parameter_dict["stepSize"]
+    returnNum = int(parameter_dict["returnNum"])
 
     # Only accept modelName as IRRR
-    if model_name.lower() != "irrr":
+    if model_name.lower() != "baleen":
         logger.warning(f"Bad model name: {model_name}")
         return {}
     # Check wiki version
-    if wiki_version in ES_WIKI_INDEX_NAMES:
-        es_index = wiki_version
+    if wiki_version == config.baleen.wiki2017.api_index_name:
+        retriever_wiki_version = "2017"
+    elif wiki_version == config.baleen.wiki2020.api_index_name:
+        retriever_wiki_version = "2020"
     else:
         logger.warning(f"bad wiki version: {wiki_version}")
         return {}
-    # Parse max step to integer
-    try:
-        step_size = int(step_size)
-    except:
-        logger.warning(f"Max step is not an integer: {step_size}")
-        return {}
+    
+    retriever = Retriever(wiki_version=retriever_wiki_version)
 
-    result = inference_model(question, index_name=es_index, max_step=step_size)
-    logger.info(f"Question: {result.question}")
-    logger.info(f"Wiki: {wiki_version}")
-    logger.info(f"Step: {step_size}")
-    logger.info(f"Answer: {result.answer}\n")
-    return result.to_response_dict()
+    result: Union[RetrievalResult, List[RetrievalResult]] = retriever(query_or_queries=queries, return_num=returnNum)
+    logger.info(f"Question: {result.query}")
+    logger.info(f"Retrieved Docs length: {len(result.documents_with_score)}")
+    logger.info(f"Top 1 doc title: {result.documents_with_score[0].title}")
+    logger.info(f"Wiki: {retriever_wiki_version}")
+    logger.info(f"MaxreturnNum: {returnNum}")
+    
+    # Format to response dict
+    if type(result) == list:
+        return [r.to_response_dict() for r in result]
+    return [result.to_response_dict()]
 
 
 if __name__ == "__main__":

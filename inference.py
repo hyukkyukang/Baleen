@@ -7,7 +7,7 @@ import hkkang_utils.pattern as pattern_utils
 import hkkang_utils.time as time_utils
 import tqdm
 
-from api.types import DocumentWithScore, RetrievalResult
+from api.data_types import DocumentWithScore, RetrievalResult
 from baleen.condenser.condense import Condenser
 from baleen.engine import Baleen
 from baleen.hop_searcher import HopSearcher
