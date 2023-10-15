@@ -6,3 +6,8 @@ torch
 transformers
 tqdm
 hkkang_utils
+flask
+flask_cors
+waitress
+attrs
+redis

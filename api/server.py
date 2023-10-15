@@ -1,4 +1,6 @@
 import logging
+import pickle
+from typing import *
 from typing import List, Union
 
 from flask import Flask, request
@@ -20,7 +22,6 @@ cors = CORS(app)
 logger = logging.getLogger("FlaskServer")
 logger.setLevel(logging.INFO)
 
-
 @app.route("/")
 def hello_world():
     return "<p>Hello, World! from Baleen API</p>"
@@ -28,11 +29,15 @@ def hello_world():
 
 @app.route("/retrieval", methods=["GET", "POST", "OPTIONS"])
 def model_inference():
-    # GET variables
-    parameter_dict = request.args.to_dict()
+    logger.info(f"Received retrieval request from {request.remote_addr}")
+    # Handle GET and POST requests
+    if request.method == "POST":
+        parameter_dict: Dict = request.json
+    else:
+        parameter_dict: Dict = request.args.to_dict()
 
     # Check parameters are valid
-    params_to_check = ["modelName", "wikiVersion", "returnNum", "queries"]
+    params_to_check = ["modelName", "wikiVersion", "returnNum", "query_or_queries"]
     if len(parameter_dict) == 0:
         logger.warning("/retrieval: No parameter")
         return {}
@@ -43,7 +48,7 @@ def model_inference():
 
     # Get params
     model_name = parameter_dict["modelName"]
-    queries = parameter_dict["queries"]
+    query_or_queries = parameter_dict["query_or_queries"]
     wiki_version = parameter_dict["wikiVersion"]
     returnNum = int(parameter_dict["returnNum"])
 
@@ -61,18 +66,27 @@ def model_inference():
         return {}
     
     retriever = Retriever(wiki_version=retriever_wiki_version)
-
-    result: Union[RetrievalResult, List[RetrievalResult]] = retriever(query_or_queries=queries, return_num=returnNum)
-    logger.info(f"Question: {result.query}")
-    logger.info(f"Retrieved Docs length: {len(result.documents_with_score)}")
-    logger.info(f"Top 1 doc title: {result.documents_with_score[0].title}")
+    result_or_results: Union[RetrievalResult, List[RetrievalResult]] = retriever(
+        query_or_queries=query_or_queries, return_num=returnNum
+    )
+    
+    # Result to dic
+    if type(result_or_results) == list:
+        result_or_results = [result.dic for result in result_or_results]
+    else:
+        result_or_results = result_or_results.dic
+        
+    if type(result_or_results) == list:
+        logger.info(f"Mutliple questions asked: {len(result_or_results)}")
+        result = result_or_results[0]
+    logger.info(f"Question: {result['query']}")
+    logger.info(f"Retrieved Docs length: {len(result['documents_with_score'])}")
+    logger.info(f"Top 1 doc title: {result['documents_with_score'][0]['title']}")
     logger.info(f"Wiki: {retriever_wiki_version}")
     logger.info(f"MaxreturnNum: {returnNum}")
-    
+
     # Format to response dict
-    if type(result) == list:
-        return [r.to_response_dict() for r in result]
-    return [result.to_response_dict()]
+    return result_or_results
 
 
 if __name__ == "__main__":

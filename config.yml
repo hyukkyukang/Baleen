@@ -1,4 +1,8 @@
 base_dir: /mnt/md0/hkkang/QAGPT/
+redis:
+    host: 141.223.199.148
+    port: 6379
+    db_id: 12
 api_server:
     host: 0.0.0.0
     port: 5004
